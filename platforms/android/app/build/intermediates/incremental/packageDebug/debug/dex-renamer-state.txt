@@ -1,0 +1,4 @@
+#Tue Feb 19 21:06:59 GMT 2019
+base.0=/home/jeremiah/Desktop/visualMapping/platforms/android/app/build/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex
