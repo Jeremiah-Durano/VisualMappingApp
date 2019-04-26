@@ -38,6 +38,17 @@
                 onSuccess: function(imgURI){
                     document.getElementById('msg').textContent = imgURI;
                     document.getElementById('photo').src = imgURI;
+                    $.ajax
+                    ({
+                        type: 'POST', 
+                        url: 'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDE3lf-yd4nNV1bPLDrh92nGegweK09MhY',
+                        success: fucntion()
+                        {
+                            
+
+                        }
+
+                    });
                     
                 },
                 onFailure: function(msg){
