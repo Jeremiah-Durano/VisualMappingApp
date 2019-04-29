@@ -6,9 +6,10 @@
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
         <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script type="text/javascript" src="cordova.js"></script>
-       <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"> 
-        <meta http-equiv="Content-Security-Policy" 
+       <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"> 
+       <!-- <meta http-equiv="Content-Security-Policy" 
             content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; 
             style-src 'self' 'unsafe-inline'; 
             media-src *; 
@@ -24,7 +25,7 @@
                 takephoto: function(){
                     let opts = {
                         quality: 80,
-                        destinationType: Camera.DestinationType.FILE_URI,
+                        destinationType: Camera.DestinationType.DATA_URL,
                         sourceType: Camera.PictureSourceType.CAMERA,
                         mediaType: Camera.MediaType.PICTURE,
                         encodingType: Camera.EncodingType.JPEG,
@@ -35,18 +36,48 @@
                     
                     navigator.camera.getPicture(app.onSuccess, app.onFailure, opts);
                 },
-                onSuccess: function(imgURI){
-                    document.getElementById('msg').textContent = imgURI;
-                    document.getElementById('photo').src = imgURI;
-                    
+                onSuccess: function(imageData){
+                    document.getElementById('msg').textContent = imageData;
+                    document.getElementById('photo').src = imageData;
+                        $.ajax({
+                          url: "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDE3lf-yd4nNV1bPLDrh92nGegweK09MhY",
+                          type: "POST",
+                          data: { 
+                              "requests": [
+                                {
+                                  "image": {
+                                    "content": "'imageData'"
+                                  },
+                                  "features": [
+                                    {
+                                      "type": "LANDMARK_DETECTION"
+                                    }
+                                  ]
+                                }
+                            ]
+                          },
+                          dataType: "json",
+                          success: function (result) {
+                              switch (result) {
+                                  case true:
+                                       document.getElementById('msg').textContent = result;
+                                      break;
+                                  default:
+                                      resultDiv.html(result);
+                              }
+                          },
+                          error: function (xhr, ajaxOptions, thrownError) {
+                          alert(xhr.status);
+                          alert(thrownError);
+                          }
+                      });
                 },
                 onFailure: function(msg){
                     document.getElementById('msg').textContent = msg;
                 }
             };
-            
-            document.addEventListener('deviceready', app.init);
-        </script>
+         document.addEventListener('deviceready', app.init);           
+    </script>
     </head>
     <body>
         <div data-role="page">
@@ -54,12 +85,14 @@
                 <h4>Visual Mapping</h4>
             </div>
             <div data-role="main" class="ui-content">
-                <p> <img src="img/logo.png" alt="image" id="photo"/></p>
+                <p> <img src="img/logo.png" alt="image" id="photo"></p>
                 <input type="button" data-mini="true" value="Take Picture" id="btn">
+                <input type="button" data-mini="true" value="Check for Landmark" id="btn2">
                 <!----<p><button id="btn">Take Picture</button></p> -->
             <div class="ui-field-contain">
                 <label for="textinput-5">Warnings:</label>
                 <p id="msg"></p>
+                <p id="response"></p>
             </div>
                 <!-- <p id="msg"></p> -->
             </div>
