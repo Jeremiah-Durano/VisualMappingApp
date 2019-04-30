@@ -5,8 +5,7 @@
         <meta charset="utf-8">
         <title>Visual Mapping Application</title>
         
-
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/iconfont.css">
@@ -56,7 +55,8 @@
                     var encoded = imageData;
                     document.getElementById('msg').textContent = imageData;
                     document.getElementById('photo').src = imageData;
-                    const Url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCrpqIBELUssOVLnlzuvBh7Tgh43EGCeHk"
+                    const Url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD2WVnC76ZMkpSB97PN7JOrovIqWYPJc00"
+                    var xhr = new XMLHttpRequest();
                     var Data = {
                         "requests": [
                             {
@@ -71,20 +71,30 @@
                             }
                         ]
                     };
+                    var payload = JSON.stringify(Data);
                     const otherPrams = {
+                        dataType: "json",
                         headers:{
-                            'Content-Type': 'application/json'
+                            'Accept': 'application/json,text/plain',
+                            'Content-type':'application/json'
+
                         },
-                        body: Data,
+                        body: payload,
                         method: "POST"
                     };
                     fetch(Url,otherPrams)
-                    .then((res) => res.json())
-                    .then(function(data){
-                        document.getElementById('msg').textContent = data;
-                    })
-                    .catch(error => alert('Error:', error));
-                },
+                        .then((res)=> res.json())
+                        .then((data) =>{
+                            console.log(data)
+                            document.getElementById('msg').textContent = data;                           
+                        })
+                        .catch((error)=> 
+                        {
+                            console.log("Booo");
+                        });
+                        
+        
+            },
                 onFailure: function(msg){
                     document.getElementById('msg').textContent = msg;
                 }
@@ -215,7 +225,7 @@
                                     <div class="col-sm-4">
                                         <div class="team_item team_skill">
                                             <div class="team_author">
-                                                <h4>Ian Carpendale</h4>
+                                                <h4></h4>
                                                 <p>CEO & FOunder</p>
                                             </div>
 
@@ -251,7 +261,7 @@
                                     <div class="col-sm-4">
                                         <div class="team_item xs-m-top-30">
                                             <div class="port_img">
-                                                <img src="images/team-img3.png" alt="" />
+                                                <img src="" alt="" />
                                             </div>
                                         </div>
                                     </div>
@@ -289,7 +299,7 @@
                                     <div class="col-sm-4">
                                         <div class="team_item team_skill">
                                             <div class="team_author">
-                                                <h4>Jeremiah Durano</h4>
+                                                <h4></h4>
                                                 <p>CEO & Founder</p>
                                             </div>
 
@@ -324,7 +334,7 @@
                                     <div class="col-sm-4">
                                         <div class="team_item xs-m-top-30">
                                             <div class="port_img">
-                                                <img src="images/team-img2.jpg" alt="" />
+                                                <img src="" alt="" />
                                             </div>
                                         </div>
                                     </div>
@@ -339,7 +349,7 @@
                                             <div class="team_socail">
                                                 <h5>Get In Touch</h5>
                                                 <ul class="list-inline m-top-20">
-                                                    <li><a href="https://www.facebook.com/miah9814"><i class="fa fa-facebook"></i></a></li>
+                                                    <li><a href=""><i class="fa fa-facebook"></i></a></li>
                                                     <li><a href="twitter.com"><i class="fa fa-twitter"></i></a></li>
                                                     <li><a href="linkedin.com"><i class="fa fa-linkedin"></i></a></li>
                                                     <li><a href="google.com"><i class="fa fa-google-plus"></i></a></li>
@@ -361,7 +371,7 @@
                                     <div class="col-sm-4">
                                         <div class="team_item team_skill">
                                             <div class="team_author">
-                                                <h4>Sukhdev Singh</h4>
+                                                <h4></h4>
                                                 <p>CEO & Founder</p>
                                             </div>
 
@@ -397,7 +407,7 @@
                                     <div class="col-sm-4">
                                         <div class="team_item xs-m-top-30">
                                             <div class="port_img">
-                                                <img src="images/team-img1.jpg" alt="" />
+                                                <img src="" alt="" />
                                             </div>
                                         </div>
                                     </div>
@@ -411,7 +421,7 @@
                                             <div class="team_socail">
                                                 <h5>Get In Touch</h5>
                                                 <ul class="list-inline m-top-20">
-                                                    <li><a href="https://www.facebook.com/sukhdev.singh.7758"><i class="fa fa-facebook"></i></a></li>
+                                                    <li><a href=""><i class="fa fa-facebook"></i></a></li>
                                                     <li><a href="twitter.com"><i class="fa fa-twitter"></i></a></li>
                                                     <li><a href="linkedin.com"><i class="fa fa-linkedin"></i></a></li>
                                                     <li><a href="google.com"><i class="fa fa-google-plus"></i></a></li>
