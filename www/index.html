@@ -23,15 +23,16 @@
     <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="cordova.js"></script>
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"> 
-       <!-- <meta http-equiv="Content-Security-Policy" 
+    
+    <!-- <meta name="viewport" content="user-scalable=yes, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width"> 
+     <meta http-equiv="Content-Security-Policy" 
             content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; 
             style-src 'self' 'unsafe-inline'; 
             media-src *; 
             script-src 'self' 'unsafe-inline';
             img-src 'self' data: content:;">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no"> -->
+        <meta name="format-detection" content="telephone=yes">
+        <meta name="msapplication-tap-highlight" content="yes"> -->
         <script>
             let app = {
                 init: function(){
@@ -52,40 +53,37 @@
                     navigator.camera.getPicture(app.onSuccess, app.onFailure, opts);
                 },
                 onSuccess: function(imageData){
+                    var encoded = imageData;
                     document.getElementById('msg').textContent = imageData;
                     document.getElementById('photo').src = imageData;
-                        $.ajax({
-                          url: "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDE3lf-yd4nNV1bPLDrh92nGegweK09MhY",
-                          type: "POST",
-                          data: { 
-                              "requests": [
+                    const Url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCrpqIBELUssOVLnlzuvBh7Tgh43EGCeHk"
+                    var Data = {
+                        "requests": [
+                            {
+                              "image": {
+                                "content": encoded
+                              },
+                              "features": [
                                 {
-                                  "image": {
-                                    "content": "'imageData'"
-                                  },
-                                  "features": [
-                                    {
-                                      "type": "LANDMARK_DETECTION"
-                                    }
-                                  ]
+                                  "type": "LANDMARK_DETECTION"
                                 }
-                            ]
-                          },
-                          dataType: "json",
-                          success: function (result) {
-                              switch (result) {
-                                  case true:
-                                       document.getElementById('msg').textContent = result;
-                                      break;
-                                  default:
-                                      resultDiv.html(result);
-                              }
-                          },
-                          error: function (xhr, ajaxOptions, thrownError) {
-                          alert(xhr.status);
-                          alert(thrownError);
-                          }
-                      });
+                              ]
+                            }
+                        ]
+                    };
+                    const otherPrams = {
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body: Data,
+                        method: "POST"
+                    };
+                    fetch(Url,otherPrams)
+                    .then((res) => res.json())
+                    .then(function(data){
+                        document.getElementById('msg').textContent = data;
+                    })
+                    .catch(error => alert('Error:', error));
                 },
                 onFailure: function(msg){
                     document.getElementById('msg').textContent = msg;
@@ -169,7 +167,7 @@
                                     <p> <img src="img/logo.png" alt="image" id="photo"></p>
                                     <br>
                                     <input type="button" value="Take Picture" id="btn">
-                                    <input type="button" value="Check for Landmark" id="btn2">
+                                    <!--- <input type="button" value="Check for Landmark" id="btn2"> -->
                                     <br>
                                             <label for="textinput-5">Warnings:</label>
                                             <p id="msg"></p>
