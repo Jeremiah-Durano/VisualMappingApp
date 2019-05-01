@@ -35,9 +35,221 @@
         <script>
             let app = {
                 init: function(){
-                    document.getElementById('btn').addEventListener('click', app.takephoto); //calls app.takephoto 
+                    document.getElementById('btn').addEventListener('click', app.takephotoFromCamera); //calls app.takephoto 
+                    document.getElementById('btn-gallery').addEventListener('click', app.takephotoFromGallery); //calls app.takephoto 
                 },
-                takephoto: function(){
+                takephotoFromCamera: function(){
+				
+                    navigator.camera.getPicture(function(imageURI){
+		
+					var encoded = imageURI;
+				    // document.getElementById('msg').textContent = imageData;
+					//document.getElementById('photo').src = imageData;
+					
+					const Url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD2WVnC76ZMkpSB97PN7JOrovIqWYPJc00"
+					var xhr = new XMLHttpRequest();
+					var Data = {
+						 "requests": [
+							{
+							  "image": {
+								"content": encoded
+							  },
+							  "imageContext": {
+								"cropHintsParams": {
+								  "aspectRatios": [
+									0.8,
+									1,
+									1.2
+								  ]
+								}
+							  },
+						
+							 "features": [
+								{
+								  "maxResults": 50,
+								  "type": "LANDMARK_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "FACE_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "OBJECT_LOCALIZATION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "LOGO_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "LABEL_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "DOCUMENT_TEXT_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "SAFE_SEARCH_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "IMAGE_PROPERTIES"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "CROP_HINTS"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "WEB_DETECTION"
+								}
+							  ],
+							  
+							}
+						]
+						
+					};
+					
+					var payload = JSON.stringify(Data);
+					const otherPrams = {
+						dataType: "json",
+						headers:{
+							'Accept': 'application/json,text/plain',
+							'Content-type':'application/json'
+
+						},
+						body: payload,
+						method: "POST"
+					};
+					fetch(Url,otherPrams)
+						.then((res)=> res.json())
+						.then((data) =>{
+							console.log('Google cloud vision data by camera uploaded',data)
+							document.getElementById('msg').textContent = data;                           
+						})
+						.catch((error)=> 
+						{
+							console.log("Error: ",error);
+						});
+				},function(error){
+					console.log('error',error);
+				},{ 
+					quality: 50,
+					cameraDirection:1,
+					destinationType: Camera.DestinationType.DATA_URL,
+					correctOrientation: true
+				});
+					
+                },
+				takephotoFromGallery: function(){
+				
+                    navigator.camera.getPicture(function(imageURI){
+		
+					var encoded = imageURI;
+				   // document.getElementById('msg').textContent = imageData;
+					//document.getElementById('photo').src = imageData;
+					
+					const Url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD2WVnC76ZMkpSB97PN7JOrovIqWYPJc00"
+					var xhr = new XMLHttpRequest();
+					var Data = {
+						 "requests": [
+							{
+							  "image": {
+								"content": encoded
+							  },
+							  "imageContext": {
+								"cropHintsParams": {
+								  "aspectRatios": [
+									0.8,
+									1,
+									1.2
+								  ]
+								}
+							  },
+						
+							 "features": [
+								{
+								  "maxResults": 50,
+								  "type": "LANDMARK_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "FACE_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "OBJECT_LOCALIZATION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "LOGO_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "LABEL_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "DOCUMENT_TEXT_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "SAFE_SEARCH_DETECTION"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "IMAGE_PROPERTIES"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "CROP_HINTS"
+								},
+								{
+								  "maxResults": 50,
+								  "type": "WEB_DETECTION"
+								}
+							  ],
+							  
+							}
+						]
+						
+					};
+					
+					var payload = JSON.stringify(Data);
+					const otherPrams = {
+						dataType: "json",
+						headers:{
+							'Accept': 'application/json,text/plain',
+							'Content-type':'application/json'
+
+						},
+						body: payload,
+						method: "POST"
+					};
+					fetch(Url,otherPrams)
+						.then((res)=> res.json())
+						.then((data) =>{
+							console.log('Google cloud vision data by gallery uploaded',data)
+							document.getElementById('msg').textContent = JSON.stringify(data, undefined, 2);;                           
+						})
+						.catch((error)=> 
+						{
+							console.log("Error: ",error);
+						});
+				},function(error){
+					console.log('error',error);
+				},{ 
+					quality: 50,
+					destinationType: Camera.DestinationType.DATA_URL,
+					sourceType : Camera.PictureSourceType.PHOTOLIBRARY,
+					mediaType: navigator.camera.MediaType.SAVEDPHOTOALBUM, 
+					correctOrientation: true,
+				});
+					
+                },
+				takephoto: function(){
                     let opts = {
                         quality: 80,
                         destinationType: Camera.DestinationType.DATA_URL,
@@ -46,16 +258,17 @@
                         encodingType: Camera.EncodingType.JPEG,
                         cameraDirection: Camera.Direction.BACK,
                         targetWidth: 300,
-                        targetHeight: 400
+                        targetHeight: 400,
                     };
-                    
+					 
                     navigator.camera.getPicture(app.onSuccess, app.onFailure, opts);
                 },
                 onSuccess: function(imageData){
                     var encoded = imageData;
                     document.getElementById('msg').textContent = imageData;
                     document.getElementById('photo').src = imageData;
-                    const Url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD2WVnC76ZMkpSB97PN7JOrovIqWYPJc00"
+                    
+					const Url = "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyD2WVnC76ZMkpSB97PN7JOrovIqWYPJc00"
                     var xhr = new XMLHttpRequest();
                     var Data = {
                         "requests": [
@@ -85,8 +298,8 @@
                     fetch(Url,otherPrams)
                         .then((res)=> res.json())
                         .then((data) =>{
-                            console.log(data)
-                            document.getElementById('msg').textContent = data;                           
+                            console.log('Vision response from camera uploaded image',data)
+                            document.getElementById('msg').textContent = JSON.stringify(data, undefined, 2);                           
                         })
                         .catch((error)=> 
                         {
@@ -99,7 +312,11 @@
                     document.getElementById('msg').textContent = msg;
                 }
             };
-         document.addEventListener('deviceready', app.init);           
+         document.addEventListener('deviceready', app.init);  
+
+			
+
+         
     </script>
     </head>
  <body data-spy="scroll" data-target="#navbar-menu" data-offset="110">
@@ -176,12 +393,15 @@
 
                                     <p> <img src="img/logo.png" alt="image" id="photo"></p>
                                     <br>
-                                    <input type="button" value="Take Picture" id="btn">
-                                    <!--- <input type="button" value="Check for Landmark" id="btn2"> -->
+                                    <input type="button" value="Take Picture From Camera" id="btn">
+                                    <input type="button" value="Take Picture From Gallery" id="btn-gallery" >
+                                    <!--- <input type="button" value="Check for Landmark" id="btn2" onclick="ImageGallery('ru','rus');"> -->
                                     <br>
                                             <label for="textinput-5">Warnings:</label>
                                             <p id="msg"></p>
-                                            <p id="response"></p>
+											<p></p> 
+                                            <pre  id="response"> </pre>
+											<img src="" id="ru">
 
                             </div>
                             <section id="product" class="product bg-blue roomy-30">
@@ -468,6 +688,12 @@
     </footer>
 </div>
 
+<!-- <script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript">
+	app.initialize();
+</script> -->
+
 <script src="js/vendor/jquery-1.11.2.min.js"></script>
 <script src="js/vendor/bootstrap.min.js"></script>
 <script src="js/jquery.magnific-popup.js"></script>
@@ -475,5 +701,5 @@
 <script src="js/bootsnav.js"></script>
 <script src="js/plugins.js"></script>
 <script src="js/main.js"></script>
-<script type="text/javascript" src="cordova.js"></script>
-</>
+<script src="js/mediaProvider.js"></script>
+<!-- <script type="text/javascript" src="cordova.js"></script> -->
